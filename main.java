@@ -1,41 +1,27 @@
-import org.java_websocket.client.WebSocketClient;
-import org.java_websocket.handshake.ServerHandshake;
-import java.net.URI;
-import java.util.concurrent.CountDownLatch;
+const http = require("http");
+const WebSocket = require("ws");
 
-public class SimpleWebSocketClient extends WebSocketClient {
-    private String lastMessage = ""; // Store received message
-    private final CountDownLatch latch;
+// Create an HTTP server
+const server = http.createServer();
+const wss = new WebSocket.Server({ server });
 
-    public SimpleWebSocketClient(URI serverUri, CountDownLatch latch) {
-        super(serverUri);
-        this.latch = latch;
-    }
+const PORT = process.env.PORT || 5001; // Use Heroku's assigned port or 5001 locally
 
-    @Override
-    public void onOpen(ServerHandshake handshake) {
-        System.out.println("Connected to WebSocket server.");
-        latch.countDown(); // Signal connection ready
-    }
+wss.on("connection", (ws) => {
+    console.log("Client connected");
 
-    @Override
-    public void onMessage(String message) {
-        System.out.println("Received message: " + message);
-        lastMessage = message; // Store the latest message
-    }
+    ws.on("message", (message) => {
+        console.log("Received: " + message);
+        ws.send("Echo: " + message); // Echo message back to client
+    });
 
-    @Override
-    public void onClose(int code, String reason, boolean remote) {
-        System.out.println("Connection closed. Reason: " + reason);
-    }
+    ws.on("close", () => {
+        console.log("Client disconnected");
+    });
+});
 
-    @Override
-    public void onError(Exception ex) {
-        System.err.println("WebSocket error: " + ex.getMessage());
-    }
-
-    public String getLastMessage() {
-        return lastMessage;
-    }
-}
+// Start server
+server.listen(PORT, () => {
+    console.log(`WebSocket server running on port ${PORT}`);
+});
 
