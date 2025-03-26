@@ -10,6 +10,7 @@ public class SimpleWebSocketClient extends WebSocketClient {
     public SimpleWebSocketClient(URI serverUri, CountDownLatch latch) {
         super(serverUri);
         this.latch = latch;
+        res.send("WORKING");
     }
 
     @Override
