@@ -13,10 +13,6 @@ wss.on("connection", (ws) => {
     ws.on("message", (message) => {
         console.log("Received: " + message);
         ws.send(message); // Echo message back to client
-
-    ws.on("playerIGN", (playerIGN) => {
-        console.log("Received IGN: " + playerIGN);
-        ws.send(playerIGN); // Echo message back to client
     });
 
     ws.on("close", () => {
