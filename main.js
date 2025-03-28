@@ -5,7 +5,7 @@ const WebSocket = require("ws");
 const server = http.createServer();
 const wss = new WebSocket.Server({ server });
 
-const PORT = process.env.PORT || 5001; // Use Heroku's assigned port or 5001 locally
+const PORT = process.env.PORT || 5001; // Heroku dynamically sets the port
 
 wss.on("connection", (ws) => {
     console.log("Client connected");
@@ -17,6 +17,10 @@ wss.on("connection", (ws) => {
 
     ws.on("close", () => {
         console.log("Client disconnected");
+    });
+
+    ws.on("error", (err) => {
+        console.error("WebSocket error: ", err);
     });
 });
 
